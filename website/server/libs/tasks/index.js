@@ -270,7 +270,6 @@ async function getTasks (req, res, options = {}) {
     remove(taskOrder, taskId => tasks.findIndex(task => task._id === taskId) === -1);
     if (preLength !== taskOrder.length) {
       owner.tasksOrder[key] = taskOrder;
-      owner.markModified('tasksOrder');
       ownerDirty = true;
     }
   });
@@ -303,7 +302,17 @@ async function getTasks (req, res, options = {}) {
     }
   });
 
-  if (ownerDirty) await owner.save();
+  if (ownerDirty) {
+    let model;
+    if (challenge) {
+      model = Challenge;
+    } else if (group) {
+      model = Group;
+    } else {
+      model = User;
+    }
+    await model.updateOne({ _id: owner._id }, { tasksOrder: owner.tasksOrder }).exec();
+  }
 
   // Remove empty values from the array and add any unordered task
   orderedTasks = compact(orderedTasks).concat(unorderedTasks);
