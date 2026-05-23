@@ -25,7 +25,7 @@
           @keydown.down="autoCompleteMixinSelectNextAutocomplete($event)"
           @keypress.enter="autoCompleteMixinSelectAutocomplete($event)"
           @keydown.esc="autoCompleteMixinHandleEscape($event)"
-        >
+        ></input>
       </div>
       <div class="form-group">
         <label>
@@ -44,7 +44,7 @@
           @keydown.down="autoCompleteMixinSelectNextAutocomplete($event)"
           @keypress.enter="autoCompleteMixinSelectAutocomplete($event)"
           @keydown.esc="autoCompleteMixinHandleEscape($event)"
-        >
+        ></input>
       </div>
       <div class="form-group">
         <label>
@@ -179,9 +179,6 @@
           </button>
         </div>
       </div>
-      <!-- @TODO: Implement in V2 .form-grouplabel
-  strong(v-once) {{$t('endDate')}}
-      b-form-input.end-date-input-->
       <div
         v-if="creating"
         class="form-group"
