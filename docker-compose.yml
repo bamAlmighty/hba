@@ -7,7 +7,7 @@ services:
     depends_on:
       - server
     environment:
-      - BASE_URL=https://habit.nerds.city
+      - BASE_URL=https://hba.nerds.city
     networks:
       - habitica
       - proxy
@@ -26,7 +26,7 @@ services:
       traefik.http.routers.hba.rule: Host(`hba.nerds.city`)
       traefik.http.routers.hba.entrypoints: websecure
       traefik.http.services.hba.loadbalancer.server.port: 5173
-      traefik.http.routers.hba.service: foundry
+      traefik.http.routers.hba.service: hba
       traefik.http.routers.hba.tls.certresolver: letsencrypt
   server:
     build:
