@@ -1,5 +1,5 @@
 services:
-  client:
+  habitica-client:
     build:
       context: .
       dockerfile: ./Dockerfile-Dev
@@ -7,15 +7,23 @@ services:
     depends_on:
       - server
     environment:
-      - BASE_URL=http://server:3000
+      - BASE_URL=https://habit.nerds.city
     networks:
       - habitica
+      - proxy
     ports:
       - "5173:5173"
     volumes:
       - .:/usr/src/habitica
       - /usr/src/habitica/node_modules
       - /usr/src/habitica/website/client/node_modules
+    labels:
+      traefik.enable: true
+      traefik.tcp.routers.7dtd.rule: HostSNI(`*`) # Use HostSNI for TCP routing
+      traefik.tcp.routers.7dtd.entrypoints: 7dtd-entry # Map to a defined TCP entrypoint 26900
+      traefik.tcp.routers.7dtd.service: 7dtd-service
+      traefik.tcp.services.7dtd-service.loadbalancer.server.port: 26900 # Default 7DTD Port
+      traefik.udp.routers.7dtd.entrypoints: 7dtd-entry-udp
   server:
     build:
       context: .
@@ -55,3 +63,6 @@ services:
 networks:
   habitica:
     driver: bridge
+  proxy:
+    external: true
+    name: "traefik_proxy"
