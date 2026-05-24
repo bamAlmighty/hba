@@ -11,19 +11,23 @@ services:
     networks:
       - habitica
       - proxy
-    ports:
-      - "5173:5173"
+    #ports:
+      #- "5173:5173"
     volumes:
       - .:/usr/src/habitica
       - /usr/src/habitica/node_modules
       - /usr/src/habitica/website/client/node_modules
     labels:
-      traefik.enable: true
-      traefik.tcp.routers.7dtd.rule: HostSNI(`*`) # Use HostSNI for TCP routing
-      traefik.tcp.routers.7dtd.entrypoints: 7dtd-entry # Map to a defined TCP entrypoint 26900
-      traefik.tcp.routers.7dtd.service: 7dtd-service
-      traefik.tcp.services.7dtd-service.loadbalancer.server.port: 26900 # Default 7DTD Port
-      traefik.udp.routers.7dtd.entrypoints: 7dtd-entry-udp
+      traefik.enable: "true"
+      traefik.http.routers.hba-http.rule: Host(`hba.nerds.city`)
+      traefik.http.routers.hba-http.entrypoints: web
+      traefik.http.routers.hba-http.middlewares: redirect-to-https
+      traefik.http.middlewares.redirect-to-https.redirectscheme.scheme: https
+      traefik.http.routers.hba.rule: Host(`hba.nerds.city`)
+      traefik.http.routers.hba.entrypoints: websecure
+      traefik.http.services.hba.loadbalancer.server.port: 5173
+      traefik.http.routers.hba.service: foundry
+      traefik.http.routers.hba.tls.certresolver: letsencrypt
   server:
     build:
       context: .
